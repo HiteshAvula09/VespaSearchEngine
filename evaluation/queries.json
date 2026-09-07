@@ -1,0 +1,52 @@
+[
+  {
+    "id": "slack_01",
+    "query": "What happened with the payment webhook transactions?",
+    "source": "slack"
+  },
+  {
+    "id": "slack_02",
+    "query": "Why were some payment transactions dropped?",
+    "source": "slack"
+  },
+  {
+    "id": "slack_03",
+    "query": "What issue affected the payments service?",
+    "source": "slack"
+  },
+  {
+    "id": "drive_01",
+    "query": "What is the Project Orion implementation plan?",
+    "source": "google_drive"
+  },
+  {
+    "id": "drive_02",
+    "query": "What is the Project Orion pilot status?",
+    "source": "google_drive"
+  },
+  {
+    "id": "drive_03",
+    "query": "What risks were identified for Project Orion?",
+    "source": "google_drive"
+  },
+  {
+    "id": "drive_04",
+    "query": "Explain the hybrid search technical architecture.",
+    "source": "google_drive"
+  },
+  {
+    "id": "github_01",
+    "query": "Which GitHub item discusses Pinecone native hybrid RAG?",
+    "source": "github"
+  },
+  {
+    "id": "github_02",
+    "query": "Find the initial commit for the Pinecone hybrid RAG project.",
+    "source": "github"
+  },
+  {
+    "id": "cross_01",
+    "query": "What content discusses hybrid search architecture?",
+    "source": null
+  }
+]

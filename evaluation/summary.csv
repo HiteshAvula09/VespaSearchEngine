@@ -1,0 +1,4 @@
+mode,avg_hit_rate@5,avg_precision@5,avg_recall@5,avg_mrr@5,avg_ndcg@5,avg_latency_ms,p50_latency_ms
+bm25,1.0,0.86,1.0,1.0,2.6689,89.53,53.86
+semantic,1.0,0.88,1.0,0.95,2.6263,61.1,49.22
+hybrid,1.0,0.88,1.0,1.0,2.7076,57.08,57.4

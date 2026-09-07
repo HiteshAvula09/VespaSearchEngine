@@ -1,0 +1,44 @@
+# ==============================
+# Secrets / credentials
+# ==============================
+.env
+.env.local
+.env.development
+.env.production
+
+GitHub Testing Token API.txt
+Neon DB Credentials;.txt
+groqLLMVespaSearchAPI_key.txt
+
+# ==============================
+# Python
+# ==============================
+.venv/
+venv/
+python/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ==============================
+# Node / Next.js
+# ==============================
+node_modules/
+frontend/node_modules/
+.next/
+frontend/.next/
+
+# ==============================
+# IDE / OS
+# ==============================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==============================
+# Logs / temporary files
+# ==============================
+*.log
+*.tmp
+*.cache

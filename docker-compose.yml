@@ -1,0 +1,29 @@
+services:
+  vespa:
+    image: vespaengine/vespa:latest
+    container_name: vespasearch-vespa
+    hostname: vespa-container
+    ports:
+      - "8080:8080"
+      - "19071:19071"
+    volumes:
+      - vespa_var:/opt/vespa/var
+      - vespa_logs:/opt/vespa/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19071/state/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vespasearch-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  vespa_var:
+  vespa_logs:
+  ollama_data:
