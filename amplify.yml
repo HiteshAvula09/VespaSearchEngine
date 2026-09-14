@@ -1,21 +1,32 @@
 version: 1
+
 applications:
   - appRoot: frontend
+
     frontend:
       phases:
+
         preBuild:
           commands:
             - npm ci
+
         build:
           commands:
             - echo "BACKEND_API_URL=$BACKEND_API_URL" >> .env.production
             - echo "NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL" >> .env.production
             - echo "NEXT_PUBLIC_LIVEKIT_AGENT_NAME=$NEXT_PUBLIC_LIVEKIT_AGENT_NAME" >> .env.production
+
+            - echo "LIVEKIT_URL=$LIVEKIT_URL" >> .env.production
+            - echo "LIVEKIT_API_KEY=$LIVEKIT_API_KEY" >> .env.production
+            - echo "LIVEKIT_API_SECRET=$LIVEKIT_API_SECRET" >> .env.production
+
             - npm run build
+
       artifacts:
         baseDirectory: .next
         files:
           - '**/*'
+
       cache:
         paths:
           - node_modules/**/*
