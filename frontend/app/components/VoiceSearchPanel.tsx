@@ -721,14 +721,28 @@ function VoiceControls({
                 </div>
               ) : null}
 
-              <div className="voiceStatus">
+              <div
+                className={`voiceStatus ${
+                  searchLoading
+                    ? "voiceStatusSearching"
+                    : searchData && !searchLoading
+                      ? "voiceStatusReady"
+                      : connected
+                        ? "voiceStatusListening"
+                        : ""
+                }`}
+              >
                 {starting
                   ? "Connecting..."
-                  : connected && !failed
-                    ? "Listening..."
-                    : failed
-                      ? "Voice connection failed"
-                      : "Ready for voice search"}
+                  : searchLoading
+                    ? "Searching your workspace..."
+                    : searchData && !searchLoading
+                      ? "Answer ready"
+                      : connected && !failed
+                        ? "Listening..."
+                        : failed
+                          ? "Voice connection failed"
+                          : "Ready for voice search"}
               </div>
               <div className="voiceHint">Speak naturally. Your final request is searched automatically.</div>
             </div>
@@ -793,7 +807,9 @@ function VoiceControls({
                           </div>
                         ) : (
                           <>
-                            <p>{result.content}</p>
+                            <p className="voiceEvidencePreview">
+                              {result.content}
+                            </p>
                             {result.file_location && (
                               <div className="fileLocation">Location: {result.file_location}</div>
                             )}
