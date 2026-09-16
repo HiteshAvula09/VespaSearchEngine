@@ -201,3 +201,163 @@ button:disabled { opacity: .6; cursor: wait; }
   .brandRow { margin-bottom: 34px; }
   button { margin-left: 0; width: 100%; }
 }
+
+.loginShell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.loginCard {
+  width: min(460px, 100%);
+  background: #11151d;
+  border: 1px solid #252b36;
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.compactBrand { margin-bottom: 34px; }
+.loginCard h2 { margin: 0 0 10px; font-size: 30px; }
+.loginHelp { color: #9aa4b3; line-height: 1.55; margin-bottom: 24px; }
+.loginForm { display: grid; gap: 16px; }
+.loginForm label { display: grid; gap: 8px; color: #c5ccd7; font-size: 13px; font-weight: 700; }
+.loginForm input {
+  width: 100%;
+  border: 1px solid #2d3440;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #0d1118;
+  color: #fff;
+  font: inherit;
+  outline: none;
+}
+.loginForm button { margin-left: 0; width: 100%; }
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 54px;
+}
+
+.topBrand { margin-bottom: 0; }
+.userPanel {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 14px;
+  background: #11151d;
+  border: 1px solid #252b36;
+  border-radius: 14px;
+}
+.signedInLabel { color: #737d8c; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+.signedInUser { font-size: 14px; font-weight: 800; margin-top: 2px; }
+.roleBadge { color: #aab4c3; font-size: 12px; margin-top: 2px; }
+.logoutButton { min-width: auto; margin-left: 0; padding: 8px 11px; font-size: 12px; }
+
+.restrictedCard { border-style: dashed; }
+.restrictedLabel { font-weight: 800; margin-top: 16px; }
+.restrictedBody p { margin-bottom: 14px; }
+.locationBox {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #2d3440;
+  border-radius: 10px;
+  background: #0b0f15;
+}
+.locationBox span { color: #737d8c; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.locationBox strong { color: #d8dee8; font-size: 13px; overflow-wrap: anywhere; }
+.fileLocation { color: #7f8998; font-size: 12px; margin: 12px 0; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .topBar { flex-direction: column; }
+  .userPanel { width: 100%; justify-content: space-between; }
+}
+
+/* Voice search dialog */
+.voiceLaunchButton {
+  margin-left: 0;
+  min-width: 104px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #171d27;
+  color: #eef2f7;
+}
+.voiceLaunchIcon { font-size: 16px; }
+.voiceDialogBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(2, 4, 8, .78);
+  backdrop-filter: blur(10px);
+}
+.voiceDialog {
+  width: min(900px, 100%);
+  max-height: min(88vh, 900px);
+  overflow: auto;
+  background: #0e1219;
+  border: 1px solid #2a3340;
+  border-radius: 24px;
+  box-shadow: 0 28px 90px rgba(0,0,0,.55);
+}
+.voiceDialogHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px;
+  background: rgba(14,18,25,.96);
+  border-bottom: 1px solid #232b36;
+  backdrop-filter: blur(12px);
+}
+.voiceDialogHeader h2 { margin: 4px 0 0; font-size: 24px; }
+.voiceDialogEyebrow { color: #8995a8; text-transform: uppercase; letter-spacing: .13em; font-size: 10px; font-weight: 800; }
+.voiceCloseButton { margin: 0; min-width: 42px; width: 42px; height: 42px; padding: 0; border-radius: 50%; background: #171d27; color: #e9edf4; font-size: 25px; font-weight: 400; }
+.voiceStage { display: grid; justify-items: center; padding: 30px 24px 24px; text-align: center; }
+.voiceOrb { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; background: #171d27; border: 1px solid #303a48; font-size: 28px; }
+.voiceOrbActive { box-shadow: 0 0 0 10px rgba(255,255,255,.035), 0 0 0 20px rgba(255,255,255,.018); }
+.voiceVisualizer { width: 150px; height: 42px; margin-top: 18px; }
+.voiceStatus { margin-top: 12px; font-size: 17px; font-weight: 800; }
+.voiceHint { margin-top: 6px; color: #7f8998; font-size: 13px; }
+.voiceConversation { padding: 0 24px 22px; }
+.voiceSpeaker { margin-bottom: 7px; color: #8995a8; text-transform: uppercase; letter-spacing: .12em; font-size: 10px; font-weight: 800; }
+.voiceBubble { max-width: 720px; padding: 16px 18px; background: #171d27; border: 1px solid #293341; border-radius: 16px 16px 16px 5px; font-size: 17px; line-height: 1.55; }
+.voiceProgress { margin: 0 24px 22px; display: flex; align-items: center; gap: 10px; padding: 13px 15px; border: 1px solid #293341; border-radius: 12px; color: #b9c2cf; font-size: 13px; }
+.voiceProgressDot { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: currentColor; animation: voicePulse 1s ease-in-out infinite; }
+@keyframes voicePulse { 50% { opacity: .25; transform: scale(.72); } }
+.voiceDialogError { margin: 0 24px 22px; padding: 13px 15px; background: #261316; border: 1px solid #5c2930; border-radius: 12px; color: #ffb8bf; }
+.voiceResults { padding: 0 24px 24px; }
+.voiceAnswerCard { padding: 20px; background: linear-gradient(180deg, #151a23, #10141b); border: 1px solid #2a3340; border-radius: 16px; }
+.voiceAnswer { white-space: pre-wrap; font-size: 17px; line-height: 1.65; }
+.voiceEvidenceHeader { display: flex; justify-content: space-between; gap: 16px; margin: 24px 0 10px; color: #b8c0cd; font-size: 13px; font-weight: 800; }
+.voiceEvidenceHeader span:last-child { color: #737d8c; font-weight: 600; }
+.voiceEvidenceList { display: grid; gap: 10px; }
+.voiceEvidenceCard { padding: 16px; background: #11161e; border: 1px solid #242d39; border-radius: 14px; }
+.voiceEvidenceCard h3 { margin: 13px 0 8px; font-size: 15px; }
+.voiceEvidenceCard p { margin: 0; color: #9aa4b3; line-height: 1.5; font-size: 13px; }
+.voiceEvidenceCard a { display: inline-block; margin-top: 10px; color: #e8edf5; font-size: 13px; text-decoration: none; }
+.voiceEmpty { padding: 18px; border: 1px solid #293341; border-radius: 12px; color: #9aa4b3; }
+.voiceDialogFooter { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; background: rgba(14,18,25,.96); border-top: 1px solid #232b36; backdrop-filter: blur(12px); }
+.voiceDialogFooter button { margin-left: 0; }
+.voiceSecondaryButton { background: #151a22; color: #dce2eb; }
+.voicePrimaryButton { min-width: 140px; }
+
+@media (max-width: 640px) {
+  .voiceDialogBackdrop { padding: 0; }
+  .voiceDialog { width: 100%; height: 100vh; max-height: none; border-radius: 0; }
+  .voiceDialogHeader, .voiceResults, .voiceConversation { padding-left: 18px; padding-right: 18px; }
+  .voiceProgress, .voiceDialogError { margin-left: 18px; margin-right: 18px; }
+  .voiceDialogFooter { padding: 14px 18px; }
+  .voiceLaunchButton { width: auto; flex: 1; }
+}

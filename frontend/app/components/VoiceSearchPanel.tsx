@@ -28,9 +28,30 @@ const AGENT_NAME =
   "vespa-search-voice";
 
 
+type VoiceResult = {
+  doc_id: string;
+  source: string;
+  source_type: string;
+  title: string;
+  content: string;
+  url: string;
+  file_location: string;
+  access: "full" | "restricted";
+  message?: string;
+  relevance: number;
+};
+
+type VoiceSearchResponse = {
+  answer: string | null;
+  results: VoiceResult[];
+};
+
 type VoiceSearchPanelProps = {
   onVoiceQuery: (query: string) => void;
   disabled?: boolean;
+  searchData?: VoiceSearchResponse | null;
+  searchLoading?: boolean;
+  searchError?: string;
 };
 
 
@@ -168,6 +189,9 @@ function isEndSessionPhrase(
 export default function VoiceSearchPanel({
   onVoiceQuery,
   disabled = false,
+  searchData = null,
+  searchLoading = false,
+  searchError = "",
 }: VoiceSearchPanelProps) {
 
   const tokenSource = useMemo(
@@ -191,6 +215,9 @@ export default function VoiceSearchPanel({
   const [voiceError, setVoiceError] =
     useState("");
 
+  const [dialogOpen, setDialogOpen] =
+    useState(false);
+
 
   /*
    * --------------------------------------------------
@@ -204,6 +231,7 @@ export default function VoiceSearchPanel({
     }
 
     setVoiceError("");
+    setDialogOpen(true);
     setStarting(true);
 
     try {
@@ -274,6 +302,12 @@ export default function VoiceSearchPanel({
         onStop={stopVoice}
         onVoiceQuery={onVoiceQuery}
         error={voiceError}
+        dialogOpen={dialogOpen}
+        onOpenDialog={() => setDialogOpen(true)}
+        onCloseDialog={() => setDialogOpen(false)}
+        searchData={searchData}
+        searchLoading={searchLoading}
+        searchError={searchError}
       />
 
       <RoomAudioRenderer />
@@ -299,6 +333,12 @@ type VoiceControlsProps = {
     (query: string) => void;
 
   error: string;
+  dialogOpen: boolean;
+  onOpenDialog: () => void;
+  onCloseDialog: () => void;
+  searchData: VoiceSearchResponse | null;
+  searchLoading: boolean;
+  searchError: string;
 };
 
 
@@ -310,6 +350,12 @@ function VoiceControls({
   onStop,
   onVoiceQuery,
   error,
+  dialogOpen,
+  onOpenDialog,
+  onCloseDialog,
+  searchData,
+  searchLoading,
+  searchError,
 
 }: VoiceControlsProps) {
 
@@ -605,6 +651,20 @@ function VoiceControls({
   ]);
 
 
+  const latestUserTranscript = [...transcriptions]
+    .reverse()
+    .find((item) =>
+      (item.participantInfo?.identity || "").startsWith("vespa-") &&
+      Boolean(item.text?.trim())
+    )?.text?.trim() || "";
+
+  const closeDialog = () => {
+    if (connected) {
+      void onStop();
+    }
+    onCloseDialog();
+  };
+
   /*
    * --------------------------------------------------
    * UI
@@ -612,158 +672,163 @@ function VoiceControls({
    */
 
   return (
-
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "10px",
-      }}
-    >
-
-
-      {/* MICROPHONE BUTTON */}
-
+    <>
       <button
         type="button"
-
-        disabled={
-          disabled ||
-          starting
-        }
-
-        onClick={
-          connected
-            ? onStop
-            : onStart
-        }
-
-        title={
-          connected
-            ? "Stop voice search"
-            : "Start voice search"
-        }
-
-        aria-label={
-          connected
-            ? "Stop voice search"
-            : "Start voice search"
-        }
-
-        style={{
-          minWidth: "46px",
-          height: "38px",
-
-          cursor:
-            disabled
-              ? "not-allowed"
-              : "pointer",
-        }}
+        className="voiceLaunchButton"
+        disabled={disabled || starting}
+        onClick={connected ? onOpenDialog : onStart}
+        title="Open voice search"
+        aria-label="Open voice search"
       >
-
-        {
-          starting
-            ? "..."
-            : connected
-              ? "■"
-              : "🎙"
-        }
-
+        <span className="voiceLaunchIcon">🎙</span>
+        <span>{connected ? "Voice active" : "Voice"}</span>
       </button>
 
-
-      {/* AUDIO VISUALIZER */}
-
-      {
-        agent.canListen &&
-        agent.microphoneTrack && (
-
-          <div
-            style={{
-              width: "70px",
-              height: "30px",
-            }}
+      {dialogOpen && (
+        <div className="voiceDialogBackdrop" role="presentation">
+          <section
+            className="voiceDialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label="VespaSearch voice search"
           >
+            <div className="voiceDialogHeader">
+              <div>
+                <div className="voiceDialogEyebrow">VespaSearch Voice</div>
+                <h2>Ask your workspace</h2>
+              </div>
+              <button
+                type="button"
+                className="voiceCloseButton"
+                onClick={closeDialog}
+                aria-label="Close voice search"
+              >
+                ×
+              </button>
+            </div>
 
-            <BarVisualizer
-              track={
-                agent.microphoneTrack
-              }
-              state={
-                agent.state
-              }
-              barCount={5}
-            />
+            <div className="voiceStage">
+              <div className={`voiceOrb ${connected ? "voiceOrbActive" : ""}`}>🎙</div>
 
-          </div>
+              {agent.canListen && agent.microphoneTrack ? (
+                <div className="voiceVisualizer">
+                  <BarVisualizer
+                    track={agent.microphoneTrack}
+                    state={agent.state}
+                    barCount={7}
+                  />
+                </div>
+              ) : null}
 
-        )
-      }
+              <div className="voiceStatus">
+                {starting
+                  ? "Connecting..."
+                  : connected && !failed
+                    ? "Listening..."
+                    : failed
+                      ? "Voice connection failed"
+                      : "Ready for voice search"}
+              </div>
+              <div className="voiceHint">Speak naturally. Your final request is searched automatically.</div>
+            </div>
 
+            {latestUserTranscript && (
+              <div className="voiceConversation">
+                <div className="voiceSpeaker">You</div>
+                <div className="voiceBubble">“{latestUserTranscript}”</div>
+              </div>
+            )}
 
-      {/* LISTENING */}
+            {searchLoading && (
+              <div className="voiceProgress">
+                <span className="voiceProgressDot" />
+                Searching enterprise knowledge and generating a grounded answer...
+              </div>
+            )}
 
-      {
-        connected &&
-        !failed && (
+            {(error || searchError || failed) && (
+              <div className="voiceDialogError">
+                {searchError || error || (failureText ? `Voice failed: ${failureText}` : "Voice failed")}
+              </div>
+            )}
 
-          <span
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              opacity: 0.85,
-              whiteSpace: "nowrap",
-            }}
-          >
-            🎙 I&apos;m listening...
-          </span>
+            {searchData && !searchLoading && (
+              <div className="voiceResults">
+                {searchData.answer && (
+                  <article className="voiceAnswerCard">
+                    <div className="eyebrow">Grounded answer</div>
+                    <div className="voiceAnswer">{searchData.answer}</div>
+                  </article>
+                )}
 
-        )
-      }
+                <div className="voiceEvidenceHeader">
+                  <span>Retrieved evidence</span>
+                  <span>{searchData.results.length} results</span>
+                </div>
 
+                <div className="voiceEvidenceList">
+                  {searchData.results.length === 0 ? (
+                    <div className="voiceEmpty">No results found.</div>
+                  ) : searchData.results.map((result, index) => {
+                    const restricted = result.access === "restricted";
+                    return (
+                      <article
+                        className={`voiceEvidenceCard ${restricted ? "restrictedCard" : ""}`}
+                        key={`${result.doc_id}-${index}`}
+                      >
+                        <div className="resultTop">
+                          <span className="badge">{result.source.replace("_", " ")}</span>
+                          <span className="score">{Number(result.relevance || 0).toFixed(3)}</span>
+                        </div>
+                        <h3>[{index + 1}] {result.title || "Untitled"}</h3>
+                        {restricted ? (
+                          <div className="restrictedBody">
+                            <div className="restrictedLabel">🔒 Limited Role View</div>
+                            <p>Content is restricted for your current role.</p>
+                            <div className="locationBox">
+                              <span>Location</span>
+                              <strong>{result.file_location || result.source}</strong>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <p>{result.content}</p>
+                            {result.file_location && (
+                              <div className="fileLocation">Location: {result.file_location}</div>
+                            )}
+                            {result.url && (
+                              <a href={result.url} target="_blank" rel="noreferrer">Open source</a>
+                            )}
+                          </>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-      {/* FAILURE */}
-
-      {
-        failed && (
-
-          <span
-            style={{
-              fontSize: "12px",
-              opacity: 0.8,
-              maxWidth: "320px",
-            }}
-          >
-
-            {
-              failureText
-                ? `Voice failed: ${failureText}`
-                : "Voice failed"
-            }
-
-          </span>
-
-        )
-      }
-
-
-      {/* ERROR */}
-
-      {
-        error && (
-
-          <span
-            style={{
-              fontSize: "12px",
-              maxWidth: "320px",
-            }}
-          >
-            {error}
-          </span>
-
-        )
-      }
-
-    </div>
+            <div className="voiceDialogFooter">
+              <button
+                type="button"
+                className="voiceSecondaryButton"
+                onClick={closeDialog}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="voicePrimaryButton"
+                disabled={disabled || starting}
+                onClick={connected ? onStop : onStart}
+              >
+                {starting ? "Connecting..." : connected ? "■ Stop voice" : "🎙 Start voice"}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
+    </>
   );
 }

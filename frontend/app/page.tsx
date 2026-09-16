@@ -79,6 +79,9 @@ export default function Home() {
   const [error, setError] =
     useState("");
 
+  const [searchOrigin, setSearchOrigin] =
+    useState<"typed" | "voice">("typed");
+
 
   /*
    * --------------------------------------------------
@@ -330,6 +333,7 @@ export default function Home() {
 
     event.preventDefault();
 
+    setSearchOrigin("typed");
     await runSearch(query);
   }
 
@@ -367,6 +371,7 @@ export default function Home() {
          * Show spoken words in textarea.
          */
         setQuery(cleaned);
+        setSearchOrigin("voice");
 
         /*
          * Same search as typed query.
@@ -669,10 +674,11 @@ export default function Home() {
             {/* VOICE SEARCH */}
 
             <VoiceSearchPanel
-              onVoiceQuery={
-                handleVoiceQuery
-              }
+              onVoiceQuery={handleVoiceQuery}
               disabled={loading}
+              searchData={searchOrigin === "voice" ? data : null}
+              searchLoading={searchOrigin === "voice" && loading}
+              searchError={searchOrigin === "voice" ? error : ""}
             />
 
 
@@ -711,7 +717,7 @@ export default function Home() {
           SEARCH RESULTS
          -------------------------------------------------- */}
 
-      {data && (
+      {data && searchOrigin === "typed" && (
 
         <section
           className="resultsWrap"
